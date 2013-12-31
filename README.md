@@ -1,4 +1,7 @@
-# Acts as Consultancy Rails Project Template #
+# AAC #
+## Rails Project Template ##
+
+This is Acts as Consultancy's Rails template. Based on our own taste.
 
 ## Usage ##
 
