@@ -3,6 +3,9 @@ file '.gitignore', <<-GITIGNORE, :force => true
 .bundle
 .DS_Store
 .sass-cache/*
+.ruby-version
+.powrc
+.rvmrc
 *.swp
 *.swo
 **/.DS_STORE
