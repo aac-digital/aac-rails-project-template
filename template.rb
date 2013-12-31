@@ -37,7 +37,10 @@ gem 'haml'
 gem 'sass'
 gem 'carrierwave'
 gem 'mini_magick'
-gem 'powder', group: 'development'
+group: 'development' do
+  gem 'powder'
+  gem 'better_errors'
+end
 
 # basic layout
 inside('app/views/layouts') do
@@ -174,6 +177,23 @@ if yes?("Do you want to use Bootstrap CSS? Yes/No")
 
   git add: "."
   git commit: %Q{ -m 'bootstrap added' }
+end
+
+if yes?("Do you want to use Capistrano v2.x Yes/No")
+  gem 'capistrano', '~> 2.15'
+  run 'bundle install'
+  run('bundle exec capify .')
+
+  git add: "."
+  git commit: %Q{ -m 'capistrano added' }
+end
+
+if yes?("Do you want to use Heroku? Yes/No")
+  gem 'rails_12factor', group: :production
+  run 'heroku create'
+
+  git add: "."
+  git commit: %Q{ -m 'heroku config added' }
 end
 
 # create pow link
