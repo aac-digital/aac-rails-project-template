@@ -37,6 +37,7 @@ gem 'haml'
 gem 'sass'
 gem 'carrierwave'
 gem 'mini_magick'
+gem 'powder', group: 'development'
 
 # basic layout
 inside('app/views/layouts') do
@@ -175,4 +176,8 @@ if yes?("Do you want to use Bootstrap CSS? Yes/No")
   git commit: %Q{ -m 'bootstrap added' }
 end
 
+# create pow link
+if yes?("Do you want to create a POW link?")
+  run('bundle exec powder link')
+end
 
