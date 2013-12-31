@@ -25,11 +25,6 @@ public/uploads/*
 tmp/*
 GITIGNORE
 
-# initialize repository
-git :init
-git add: "."
-git commit: %Q{ -m 'Initial commit' }
-
 # create databases
 rake("db:create")
 
@@ -38,6 +33,32 @@ gem 'haml'
 gem 'sass'
 gem 'carrierwave'
 gem 'mini_magick'
+
+# basic layout
+inside('app/views/layouts') do
+  run 'rm application.html.erb'
+  file 'application.html.haml', <<-TEMPLATE
+!!!
+%html{lang: "en"}
+  %head
+    %meta{charset: "utf-8"}/
+    %title Rename
+    %meta{content: "Fill with your description", name: "description"}/
+    %meta{content: "Acts as Consultancy", name: "author"}/
+    %meta{'http-equiv' => 'X-UA-Compatible', :content => 'chrome=1'}/
+    = stylesheet_link_tag    :application, media: :all
+    = javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/modernizr/2.5.3/modernizr.min.js'
+    = csrf_meta_tags
+    / HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries
+    /[if lt IE 9]
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    / Le fav and touch icons
+  %body
+    = yield
+    = javascript_include_tag :application
+TEMPLATE
+end
 
 # application.css
 inside('app/assets/stylesheets') do
@@ -87,6 +108,10 @@ end
 run('mkdir app/assets/fonts')
 FileUtils.touch('app/assets/fonts/.gitkeep')
 
+# initialize repository
+git :init
+git add: "."
+git commit: %Q{ -m 'Initial commit' }
 
 # Test helper gems
 if yes?("Do you want to include test helper gems? Yes/No")
