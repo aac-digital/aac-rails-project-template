@@ -33,6 +33,52 @@ git commit: %Q{ -m 'Initial commit' }
 # create databases
 rake("db:create")
 
+# application.css
+inside('app/assets/stylesheets') do
+  run 'rm application.css'
+  file 'style.css.scss.erb'
+  file 'application.css.scss.erb', <<-FILE
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require_self
+ *= require style
+ */
+FILE
+end
+
+inside('app/assets/javascripts') do
+  run 'rm application.js'
+  file 'app.js'
+  file 'application.js', <<-FILE
+// This is a manifest file that'll be compiled into application.js, which will include all the files
+// listed below.
+//
+// Any JavaScript/Coffee file within this directory, lib/assets/javascripts, vendor/assets/javascripts,
+// or vendor/assets/javascripts of plugins, if any, can be referenced here using a relative path.
+//
+// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
+// compiled file.
+//
+// Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
+// about supported directives.
+//
+//= require jquery
+//= require jquery_ujs
+//= require app
+//= require_tree .
+FILE
+end
+
+
+
 # Test helper gems
 if yes?("Do you want to include test helper gems? Yes/No")
   gem_group :test do
@@ -77,12 +123,14 @@ if yes?("Do you want to use Bootstrap CSS? Yes/No")
   inside('vendor/assets/stylesheets/') do
     run 'curl -s https://raw.github.com/twbs/bootstrap/master/dist/css/bootstrap.css > bootstrap.css'
   end
+  insert_into_file "app/assets/stylesheets/application.css.scss.erb", "*= require bootstrap\n", :after => "require_self\n"
 
   # Download bootstrap.js
   if yes?("Do you want to use Bootstrap JS? Yes/No")
     inside('vendor/assets/javascripts/') do
       run 'curl -s https://raw.github.com/twbs/bootstrap/master/dist/js/bootstrap.js > bootstrap.js'
     end
+    insert_into_file "app/assets/javascripts/application.js", "//= require bootstrap\n", :after => "require jquery_ujs\n"
   end
 
   git add: "."
