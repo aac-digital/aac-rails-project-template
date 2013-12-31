@@ -40,6 +40,7 @@ gem 'mini_magick'
 gem_group :development do
   gem 'powder'
   gem 'better_errors'
+  gem 'quiet_assets'
 end
 
 # basic layout
