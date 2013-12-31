@@ -33,6 +33,12 @@ git commit: %Q{ -m 'Initial commit' }
 # create databases
 rake("db:create")
 
+# add some basic gem
+gem 'haml'
+gem 'sass'
+gem 'carrierwave'
+gem 'mini_magick'
+
 # application.css
 inside('app/assets/stylesheets') do
   run 'rm application.css'
@@ -77,6 +83,9 @@ inside('app/assets/javascripts') do
 FILE
 end
 
+# create fonts dir
+run('mkdir app/assets/fonts')
+FileUtils.touch('app/assets/fonts/.gitkeep')
 
 
 # Test helper gems
