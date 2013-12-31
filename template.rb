@@ -25,6 +25,10 @@ public/uploads/*
 tmp/*
 GITIGNORE
 
+inside('config/') do
+  run 'curl -s https://gist.github.com/harisadam/8200106/raw/8857a9da5f51ad27e1d32a23336cbd89a8d82ec5/database.example.yml > database.example.yml'
+end
+
 # create databases
 rake("db:create")
 
