@@ -37,7 +37,7 @@ gem 'haml'
 gem 'sass'
 gem 'carrierwave'
 gem 'mini_magick'
-group: 'development' do
+gem_group :development do
   gem 'powder'
   gem 'better_errors'
 end
@@ -127,6 +127,10 @@ if yes?("Do you want to include test helper gems? Yes/No")
     gem 'factory_girl_rails'
     gem 'mocha'
     gem 'shoulda'
+  end
+
+  gem_group :development do
+    gem 'guard-test'
   end
 
   run 'bundle install'
