@@ -170,7 +170,7 @@ if yes?("Do you want to use Bootstrap CSS? Yes/No")
   inside('vendor/assets/stylesheets/') do
     run 'curl -s https://raw.github.com/twbs/bootstrap/master/dist/css/bootstrap.css > bootstrap.css'
   end
-  insert_into_file "app/assets/stylesheets/application.css.scss.erb", "*= require bootstrap\n", :after => "require_self\n"
+  insert_into_file "app/assets/stylesheets/application.css.scss.erb", " *= require bootstrap\n", :after => "require_self\n"
 
   # Download bootstrap.js
   if yes?("Do you want to use Bootstrap JS? Yes/No")
