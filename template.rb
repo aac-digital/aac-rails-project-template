@@ -64,6 +64,8 @@ inside('app/views/layouts') do
       <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     / Le fav and touch icons
   %body
+    /[if lt IE 7]
+      <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
     = yield
     = javascript_include_tag :application
 TEMPLATE
