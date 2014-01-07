@@ -117,6 +117,12 @@ end
 run('mkdir app/assets/fonts')
 FileUtils.touch('app/assets/fonts/.gitkeep')
 
+# create readme.md
+run 'rm README.rdoc'
+file 'README.md', <<-README
+# #{app_name}
+README
+
 # initialize repository
 git :init
 git add: "."
@@ -191,14 +197,6 @@ if yes?("Do you want to use Capistrano v2.x Yes/No")
 
   git add: "."
   git commit: %Q{ -m 'capistrano added' }
-end
-
-if yes?("Do you want to use Heroku? Yes/No")
-  gem 'rails_12factor', group: :production
-  run 'heroku create'
-
-  git add: "."
-  git commit: %Q{ -m 'heroku config added' }
 end
 
 # create pow link
