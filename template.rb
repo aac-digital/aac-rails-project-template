@@ -139,7 +139,8 @@ if yes?("Do you want to include test helper gems? Yes/No")
   end
 
   gem_group :development do
-    gem 'guard-test'
+    gem 'guard-minitest'
+    gem 'capybara'
   end
 
   run 'bundle install'
