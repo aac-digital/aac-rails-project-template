@@ -9,7 +9,6 @@ file '.gitignore', <<-GITIGNORE, :force => true
 *.swp
 *.swo
 **/.DS_STORE
-bin/*
 binstubs/*
 bundler_stubs/*
 config/database.yml
