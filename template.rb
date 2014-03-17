@@ -167,7 +167,7 @@ end
 
 if yes?("Do you want to use Heroku? Yes/No")
   gem 'rails_12factor', group: :production
-  run 'heroku create'
+  run 'heroku create --region eu'
 
   git add: "."
   git commit: %Q{ -m 'heroku config added' }
