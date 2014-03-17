@@ -36,6 +36,7 @@ gem 'haml'
 gem 'sass'
 gem 'carrierwave'
 gem 'mini_magick'
+gem 'cocoon'
 gem_group :development do
   gem 'powder'
   gem 'better_errors'
@@ -113,6 +114,8 @@ inside('app/assets/javascripts') do
 //= require_tree .
 FILE
 end
+
+insert_into_file "app/assets/javascripts/application.js", "//= require cocoon\n", :after => "require jquery_ujs\n"
 
 # create fonts dir
 run('mkdir app/assets/fonts')
