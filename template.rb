@@ -138,11 +138,14 @@ if yes?("Do you want to include test helper gems? Yes/No")
     gem 'factory_girl_rails'
     gem 'mocha'
     gem 'shoulda'
+    gem 'database_cleaner'
   end
 
   gem_group :development do
     gem 'guard-minitest'
     gem 'capybara'
+    gem 'terminal-notifier-guard'
+    gem 'minitest-reporters'
   end
 
   run 'bundle install'
