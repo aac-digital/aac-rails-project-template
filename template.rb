@@ -32,6 +32,7 @@ end
 rake("db:create")
 
 # add some basic gem
+gem 'devise', github: 'plataformatec/devise'
 gem 'haml'
 gem 'sass'
 gem 'carrierwave'
