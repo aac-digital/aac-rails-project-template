@@ -157,7 +157,7 @@ end
 # implement active admin - Rails 4 only
 if yes?("Do you want to use ActiveAdmin? Yes/No")
   # install
-  gem 'activeadmin', github: 'gregbell/active_admin'
+  gem 'activeadmin', github: 'activeadmin/activeadmin'
   run 'bundle install'
   generate 'active_admin:install'
 
