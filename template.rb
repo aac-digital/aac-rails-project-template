@@ -32,7 +32,7 @@ end
 rake("db:create")
 
 # add some basic gem
-gem 'devise', '3.2.4'
+gem 'devise', '~> 3.4.0'
 gem 'haml'
 gem 'sass'
 gem 'carrierwave'
