@@ -1,3 +1,5 @@
+installed_capistrano = false
+
 # Git Ignore
 file '.gitignore', <<-GITIGNORE, :force => true
 .bundle
@@ -198,6 +200,7 @@ end
 
 # Capistrano
 if yes?("Do you want to use Capistrano v3.x with puma Yes/No")
+  installed_capistrano = true
   gem_group :development do
     gem 'capistrano', '~> 3.3.0'
     gem 'capistrano-bundler'
@@ -236,6 +239,35 @@ PUMA_CONFIG
   git commit: %Q{ -m 'capistrano added' }
 end
 
+# Sidekiq
+if yes?("Do you want to use Sidekiq Yes/No")
+  gem 'sidekiq'
+  gem 'sinatra', :require => nil
+
+  if installed_capistrano
+    gem_group :development do
+      gem 'capistrano-sidekiq', github: 'seuros/capistrano-sidekiq'
+    end
+  end
+
+  run 'bundle install'
+
+  prepend_file Dir.glob("config/routes.rb")[0], "require 'sidekiq/web'\n"
+
+  insert_into_file Dir.glob("Capfile")[0], "\n\nrequire 'capistrano/sidekiq'", after: "require 'capistrano/passenger'" if installed_capistrano
+
+sidekiq_monitor = <<-SIDEKIQ_MONITOR
+
+  authenticate :admin_user do
+    mount Sidekiq::Web => '/sidekiq'
+  end
+SIDEKIQ_MONITOR
+
+  insert_into_file Dir.glob("config/routes.rb")[0], sidekiq_monitor, after: "Rails.application.routes.draw do"
+  
+  git add: "."
+  git commit: %Q{ -m 'sidekiq added' }
+end
 
 # create pow link
 if yes?("Do you want to create a POW link?")
