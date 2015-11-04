@@ -75,8 +75,8 @@ end
 # application.css
 inside('app/assets/stylesheets') do
   run 'rm application.css'
-  file 'style.css.scss.erb'
-  file 'application.css.scss.erb', <<-FILE
+  file 'style.scss.erb'
+  file 'application.scss.erb', <<-FILE
 /*
  * This is a manifest file that'll be compiled into application.css, which will include all the files
  * listed below.
