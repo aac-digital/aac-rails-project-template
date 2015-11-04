@@ -187,6 +187,11 @@ end
 if yes?("Do you want to use Bootstrap? Yes/No")
   gem 'bootstrap-sass', '~> 3.1.1'
 
+  inside('app/assets') do
+    insert_into_file Dir.glob("stylesheets/application.scss.erb")[0], "\n *= require bootstrap", after: / *= require_self/
+    insert_into_file Dir.glob("javascripts/application.js")[0], "//= require bootstrap\n", before: "//= require app"
+  end
+
   git add: "."
   git commit: %Q{ -m 'bootstrap added' }
 end
