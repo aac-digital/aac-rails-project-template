@@ -6,7 +6,7 @@ This is Acts as Consultancy's Rails template. Based on our own taste.
 ## Usage ##
 
 ```
-rails new app_name -d postgresql --skip-bundle -m https://raw.github.com/harisadam/aac-rails-project-template/master/template.rb
+rails new app_name -d postgresql --skip-bundle -m https://raw.githubusercontent.com/aac-digital/aac-rails-project-template/master/template.rb
 ```
 
 ## Author
