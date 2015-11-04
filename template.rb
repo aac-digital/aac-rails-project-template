@@ -1,3 +1,5 @@
+installed_capistrano = false
+
 # Git Ignore
 file '.gitignore', <<-GITIGNORE, :force => true
 .bundle
@@ -75,8 +77,8 @@ end
 # application.css
 inside('app/assets/stylesheets') do
   run 'rm application.css'
-  file 'style.css.scss.erb'
-  file 'application.css.scss.erb', <<-FILE
+  file 'style.scss.erb'
+  file 'application.scss.erb', <<-FILE
 /*
  * This is a manifest file that'll be compiled into application.css, which will include all the files
  * listed below.
@@ -163,10 +165,13 @@ if yes?("Do you want to use ActiveAdmin? Yes/No")
 
   # create user
   email_address = ask("Give me a valid email address: ")
-  password = ask("Give me a password - min 6 char: ")
-  comment_lines Dir.glob("db/migrate/*_create_admin_users.rb")[0], /admin@example.com/
-  insert_into_file Dir.glob("db/migrate/*_create_admin_users.rb")[0], "AdminUser.create!(:email => '#{email_address}', :password => '#{password}', :password_confirmation => '#{password}')", :after => "# Create a default user\n"
+  password = ask("Give me a password - min 8 char: ")
+
+  comment_lines Dir.glob("db/seeds.rb")[0], /admin@example.com/
+  append_to_file Dir.glob("db/seeds.rb")[0], "\nAdminUser.create!(email: '#{email_address}', password: '#{password}', password_confirmation: '#{password}')"
+
   rake("db:migrate")
+  rake("db:seed")
 
   git add: "."
   git commit: %Q{ -m 'active_admin added' }
@@ -184,12 +189,87 @@ end
 if yes?("Do you want to use Bootstrap? Yes/No")
   gem 'bootstrap-sass', '~> 3.1.1'
 
+  inside('app/assets') do
+    insert_into_file Dir.glob("stylesheets/application.scss.erb")[0], "\n *= require bootstrap", after: / *= require_self/
+    insert_into_file Dir.glob("javascripts/application.js")[0], "//= require bootstrap\n", before: "//= require app"
+  end
+
   git add: "."
   git commit: %Q{ -m 'bootstrap added' }
+end
+
+# Capistrano
+if yes?("Do you want to use Capistrano v3.x with puma Yes/No")
+  installed_capistrano = true
+  gem_group :development do
+    gem 'capistrano', '~> 3.3.0'
+    gem 'capistrano-bundler'
+    gem 'capistrano-rails'
+    gem 'capistrano3-puma', github: "seuros/capistrano-puma"
+  end
+
+  gem_group :production do
+    gem 'puma'
+  end
+  
+  run 'bundle install'
+  run('bundle exec cap install')
+
+  uncomment_lines Dir.glob("Capfile")[0], "require 'capistrano/bundler'"
+  uncomment_lines Dir.glob("Capfile")[0], "require 'capistrano/rails/assets'"
+
+  insert_into_file Dir.glob("Capfile")[0], "\n\nrequire 'capistrano/puma'", after: "require 'capistrano/passenger'"
+
+  puma_config =  <<-PUMA_CONFIG
+set :puma_rackup, -> { File.join(current_path, 'config.ru') }
+set :puma_state, "#\{shared_path\}/tmp/pids/puma.state"
+set :puma_pid, "#\{shared_path\}/tmp/pids/puma.pid"
+set :puma_bind, "unix://#\{shared_path\}/tmp/sockets/puma.sock"    #accept array for multi-bind
+set :puma_access_log, "#\{shared_path\}/log/puma_access.log"
+set :puma_error_log, "#\{shared_path\}/log/puma_error.log"
+set :puma_env, fetch(:rack_env, fetch(:rails_env, 'production'))
+set :puma_init_active_record, true
+set :puma_prune_bundler, true
+
+PUMA_CONFIG
+
+  insert_into_file Dir.glob("config/deploy.rb")[0], puma_config, before: "namespace :deploy do"
+
+  git add: "."
+  git commit: %Q{ -m 'capistrano added' }
+end
+
+# Sidekiq
+if yes?("Do you want to use Sidekiq Yes/No")
+  gem 'sidekiq'
+  gem 'sinatra', :require => nil
+
+  if installed_capistrano
+    gem_group :development do
+      gem 'capistrano-sidekiq', github: 'seuros/capistrano-sidekiq'
+    end
+  end
+
+  run 'bundle install'
+
+  prepend_file Dir.glob("config/routes.rb")[0], "require 'sidekiq/web'\n"
+
+  insert_into_file Dir.glob("Capfile")[0], "\n\nrequire 'capistrano/sidekiq'", after: "require 'capistrano/passenger'" if installed_capistrano
+
+sidekiq_monitor = <<-SIDEKIQ_MONITOR
+
+  authenticate :admin_user do
+    mount Sidekiq::Web => '/sidekiq'
+  end
+SIDEKIQ_MONITOR
+
+  insert_into_file Dir.glob("config/routes.rb")[0], sidekiq_monitor, after: "Rails.application.routes.draw do"
+  
+  git add: "."
+  git commit: %Q{ -m 'sidekiq added' }
 end
 
 # create pow link
 if yes?("Do you want to create a POW link?")
   run('bundle exec powder link')
 end
-
