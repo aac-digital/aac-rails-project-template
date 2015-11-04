@@ -196,8 +196,48 @@ if yes?("Do you want to use Bootstrap? Yes/No")
   git commit: %Q{ -m 'bootstrap added' }
 end
 
+# Capistrano
+if yes?("Do you want to use Capistrano v3.x with puma Yes/No")
+  gem_group :development do
+    gem 'capistrano', '~> 3.3.0'
+    gem 'capistrano-bundler'
+    gem 'capistrano-rails'
+    gem 'capistrano3-puma', github: "seuros/capistrano-puma"
+  end
+
+  gem_group :production do
+    gem 'puma'
+  end
+  
+  run 'bundle install'
+  run('bundle exec cap install')
+
+  uncomment_lines Dir.glob("Capfile")[0], "require 'capistrano/bundler'"
+  uncomment_lines Dir.glob("Capfile")[0], "require 'capistrano/rails/assets'"
+
+  insert_into_file Dir.glob("Capfile")[0], "\n\nrequire 'capistrano/puma'", after: "require 'capistrano/passenger'"
+
+  puma_config =  <<-PUMA_CONFIG
+set :puma_rackup, -> { File.join(current_path, 'config.ru') }
+set :puma_state, "#\{shared_path\}/tmp/pids/puma.state"
+set :puma_pid, "#\{shared_path\}/tmp/pids/puma.pid"
+set :puma_bind, "unix://#\{shared_path\}/tmp/sockets/puma.sock"    #accept array for multi-bind
+set :puma_access_log, "#\{shared_path\}/log/puma_access.log"
+set :puma_error_log, "#\{shared_path\}/log/puma_error.log"
+set :puma_env, fetch(:rack_env, fetch(:rails_env, 'production'))
+set :puma_init_active_record, true
+set :puma_prune_bundler, true
+
+PUMA_CONFIG
+
+  insert_into_file Dir.glob("config/deploy.rb")[0], puma_config, before: "namespace :deploy do"
+
+  git add: "."
+  git commit: %Q{ -m 'capistrano added' }
+end
+
+
 # create pow link
 if yes?("Do you want to create a POW link?")
   run('bundle exec powder link')
 end
-
