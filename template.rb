@@ -163,10 +163,13 @@ if yes?("Do you want to use ActiveAdmin? Yes/No")
 
   # create user
   email_address = ask("Give me a valid email address: ")
-  password = ask("Give me a password - min 6 char: ")
-  comment_lines Dir.glob("db/migrate/*_create_admin_users.rb")[0], /admin@example.com/
-  insert_into_file Dir.glob("db/migrate/*_create_admin_users.rb")[0], "AdminUser.create!(:email => '#{email_address}', :password => '#{password}', :password_confirmation => '#{password}')", :after => "# Create a default user\n"
+  password = ask("Give me a password - min 8 char: ")
+
+  comment_lines Dir.glob("db/seeds.rb")[0], /admin@example.com/
+  append_to_file Dir.glob("db/seeds.rb")[0], "\nAdminUser.create!(email: '#{email_address}', password: '#{password}', password_confirmation: '#{password}')"
+
   rake("db:migrate")
+  rake("db:seed")
 
   git add: "."
   git commit: %Q{ -m 'active_admin added' }
