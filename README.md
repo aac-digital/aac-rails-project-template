@@ -1,17 +1,17 @@
-# AaC 
-## Rails Project Template 
+# AaC
+## Rails Project Template
 
 This is Acts as Consultancy's Rails template. Based on our own taste.
 
 ## Usage ##
 
 ```
-rails new app_name -d mysql --skip-bundle -m https://raw.github.com/harisadam/aac-rails-project-template/master/template.rb
+rails new app_name -d postgresql --skip-bundle -m https://raw.github.com/harisadam/aac-rails-project-template/master/template.rb
 ```
 
 ## Author
 Ádám Haris  
-[Github](http://github.com/harisadam) | [Twitter](http://twitter.com/harisadam) | [LinkedIn](http://www.linkedin.com/in/harisadam) 
+[Github](http://github.com/harisadam) | [Twitter](http://twitter.com/harisadam) | [LinkedIn](http://www.linkedin.com/in/harisadam)
 
 ## License
 
